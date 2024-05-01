@@ -1,0 +1,11 @@
+count,course_id,created,date,education_level
+43,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,associates
+489,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,bachelors
+66,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,doctorate
+18,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,junior_secondary
+528,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,masters
+1,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,none
+21,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,other
+0,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,primary
+120,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,secondary
+388,course-v1:ColumbiaX+CPC+1T2022,2024-04-18T091420,2024-04-17,

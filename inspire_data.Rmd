@@ -1,0 +1,140 @@
+---
+title: "inspire_data"
+author: "Sanika Sule"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r load_libraries}
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(knitr)
+```
+
+.
+```{r clean_enr}
+enrollement =
+  read_csv("data/enrollement.csv") |>
+  janitor::clean_names() |>
+  select(date, count, honor, masters, professional, verified)
+```
+
+```{r clean_enr_loc}
+enrollement_location = 
+  read_csv("data/enrollement_location.csv") |>
+  janitor::clean_names() |>
+  select(date, count, country_name, country_alpha3) 
+```
+
+```{r clean_enr_edu}
+enrollement_education = 
+  read_csv("data/enrollement_education.csv") |>
+  janitor::clean_names()|>
+  select(date, count, education_level)
+```
+
+```{r clean_eng_act}
+engagement_activity = 
+  read_csv("data/engagement_activity.csv") |>
+  janitor::clean_names()|>
+  mutate(total_time = as.Date(interval_end) - as.Date(interval_start))|>
+  mutate(date = as.Date(created)) |>
+  select(date, interval_start, interval_end, total_time, played_video, posted_forum, attempted_problem, any )
+
+```
+
+```{r eng_act_plot}
+long_eng = engagement_activity |>
+  pivot_longer(cols = c("played_video", "posted_forum", "attempted_problem", "any"), 
+               names_to = "activity_type", 
+               values_to = "count")
+
+ggplot(long_eng, aes(x = activity_type, y = count, fill = activity_type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Comparison of Engagement Activities", 
+       x = "Activity Type", 
+       y = "Count")
+```
+
+```{r}
+yearly_summary = engagement_activity |>
+  mutate(year = lubridate::year(as.Date(interval_start))) |>
+  group_by(year) |>
+  summarise(
+    total_played_video = sum(played_video, na.rm = TRUE),
+    total_posted_forum = sum(posted_forum, na.rm = TRUE),
+    total_attempted_problem = sum(attempted_problem, na.rm = TRUE),
+    total_any = sum(any, na.rm = TRUE),
+    total_all_activities = sum(played_video, posted_forum, attempted_problem, any, na.rm = TRUE)
+  )
+```
+
+```{r activity_year}
+# Activites total by year
+ggplot(yearly_summary, aes(x = as.factor(year), y = total_all_activities, fill = as.factor(year))) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Total Engagement Activities by Year", 
+       x = "Year", 
+       y = "Total Activities")
+```
+
+```{r}
+eng_long_month = engagement_activity |>
+  mutate(
+    year = year(as.Date(interval_start)),
+    month = month(as.Date(interval_start), label = TRUE)  
+  ) |>
+  pivot_longer(
+    cols = c("played_video", "posted_forum", "attempted_problem", "any"),
+    names_to = "activity_type",
+    values_to = "count"
+  )
+```
+
+```{r activity_month}
+# Engagement by month, paneled by year
+ggplot(eng_long_month, aes(x = month, y = count, fill = activity_type)) +
+  geom_col(position = position_dodge()) +  
+  facet_wrap(~ year, scales = "free_x") +  
+  labs(
+    title = "Monthly Engagement Activities by Year",
+    x = "Month",
+    y = "Count of Activities",
+    fill = "Activity Type"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+```
+
+```{r edu_table}
+education_summary = enrollement_education |>
+  group_by(education_level) |>
+  summarise(total_count = sum(count, na.rm = TRUE))
+kable(education_summary)
+```
+
+```{r geo_table}
+geo_summary = enrollement_location |>
+  group_by(country_name) |>
+  summarise(count = sum(count, na.rm = TRUE))
+kable(geo_summary)
+```
+
+```{r}
+geo_order = enrollement_location |>
+  arrange(desc(count)) |>
+  slice_head(n = 10)
+# location plot
+ggplot(geo_order, aes(x = reorder(country_name, -count), y = count, fill = count)) +
+  geom_bar(stat = "identity") + 
+  labs(title = "Enrollment by Country (top 10)", x = "Country", y = "Enrollment Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  
+
+```
+
