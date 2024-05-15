@@ -125,7 +125,7 @@ geo_summary = enrollement_location |>
 kable(geo_summary)
 ```
 
-```{r}
+```{r top_countries}
 geo_order = enrollement_location |>
   arrange(desc(count)) |>
   slice_head(n = 10)
@@ -139,7 +139,7 @@ ggplot(geo_order, aes(x = reorder(country_name, -count), y = count, fill = count
 ```
 
 
-```{r}
+```{r pathfinding_df}
 pathfinding_countries = c("Armenia", "Botswana", "Brazil", "Burkina Faso", "Cambodia", "Canada", 
                            "Colombia", "Côte D’Ivoire", "El Salvador", "Ethiopia", "Finland", "France", 
                            "Georgia", "Guinea", "Honduras", "Indonesia", "Jamaica", "Japan", "Jordan", 
@@ -152,7 +152,7 @@ pathfinding_data = enrollement_location |>
   filter(country_name %in% pathfinding_countries)
 ```
 
-```{r}
+```{r pathfinding_countries}
 pathfinding_order <- pathfinding_data |>
   arrange(desc(count))
 # Pathfinding plot
@@ -167,7 +167,7 @@ kable(pathfinding_order)
 
 ```
 
-```{r}
+```{r path_nonpath}
 non_pathfinding_data = enrollement_location %>%
   filter(!country_name %in% pathfinding_countries)
 

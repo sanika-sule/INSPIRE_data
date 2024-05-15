@@ -349,7 +349,7 @@ ggplot(geo_order, aes(x = reorder(country_name, -count), y = count, fill = count
   theme(axis.text.x = element_text(angle = 90, hjust = 1))  
 ```
 
-![](inspire_data_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](inspire_data_files/figure-gfm/top_countries-1.png)<!-- -->
 
 ``` r
 pathfinding_countries = c("Armenia", "Botswana", "Brazil", "Burkina Faso", "Cambodia", "Canada", 
@@ -375,7 +375,7 @@ ggplot(pathfinding_order, aes(x = reorder(country_name, -count), y = count, fill
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-![](inspire_data_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](inspire_data_files/figure-gfm/pathfinding_countries-1.png)<!-- -->
 
 ``` r
 #Pathfinding table
@@ -467,4 +467,4 @@ ggplot(summary_comparison, aes(x = Group)) +
   theme_minimal()
 ```
 
-![](inspire_data_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](inspire_data_files/figure-gfm/path_nonpath-1.png)<!-- -->
