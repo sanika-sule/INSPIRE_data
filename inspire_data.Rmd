@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: github_document
 ---
 
-```{r load_libraries}
+```{r load_libraries, include = FALSE}
 library(tidyverse)
 library(tidyr)
 library(dplyr)
@@ -137,4 +137,78 @@ ggplot(geo_order, aes(x = reorder(country_name, -count), y = count, fill = count
   theme(axis.text.x = element_text(angle = 90, hjust = 1))  
 
 ```
+
+
+```{r}
+pathfinding_countries = c("Armenia", "Botswana", "Brazil", "Burkina Faso", "Cambodia", "Canada", 
+                           "Colombia", "Côte D’Ivoire", "El Salvador", "Ethiopia", "Finland", "France", 
+                           "Georgia", "Guinea", "Honduras", "Indonesia", "Jamaica", "Japan", "Jordan", 
+                           "Kenya", "Mexico", "Mongolia", "Montenegro", "Namibia", "Nigeria", 
+                           "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Romania", "South Africa", 
+                           "Sri Lanka", "Sweden", "Tanzania", "Uganda", "United Arab Emirates", "Zambia", "Zimbabwe")
+
+
+pathfinding_data = enrollement_location |>
+  filter(country_name %in% pathfinding_countries)
+```
+
+```{r}
+pathfinding_order <- pathfinding_data |>
+  arrange(desc(count))
+# Pathfinding plot
+ggplot(pathfinding_order, aes(x = reorder(country_name, -count), y = count, fill = count)) +
+  geom_bar(stat = "identity") + 
+  labs(title = "Enrollment by Pathfinding Country", x = "Country", y = "Enrollment Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+#Pathfinding table
+kable(pathfinding_order)
+
+```
+
+```{r}
+non_pathfinding_data = enrollement_location %>%
+  filter(!country_name %in% pathfinding_countries)
+
+# Summarize the enrollment counts for each group
+summary_pathfinding <- pathfinding_data %>%
+  summarize(total_enrollment = sum(count), 
+            average_enrollment = mean(count), 
+            median_enrollment = median(count))
+
+summary_non_pathfinding <- non_pathfinding_data %>%
+  summarize(total_enrollment = sum(count), 
+            average_enrollment = mean(count), 
+            median_enrollment = median(count))
+
+# Combine summaries into a single data frame
+summary_comparison <- rbind(
+  c("Pathfinding Countries", summary_pathfinding$total_enrollment, summary_pathfinding$average_enrollment, summary_pathfinding$median_enrollment),
+  c("Non-Pathfinding Countries", summary_non_pathfinding$total_enrollment, summary_non_pathfinding$average_enrollment, summary_non_pathfinding$median_enrollment)
+)
+
+# Convert to data frame and set column names
+summary_comparison <- as.data.frame(summary_comparison)
+colnames(summary_comparison) <- c("Group", "Total Enrollment", "Average Enrollment", "Median Enrollment")
+
+# Print the summary table using kable
+kable(summary_comparison)
+
+# Plot the comparison
+comparison_data <- rbind(
+  data.frame(Group = "Pathfinding", Enrollment = pathfinding_data$count),
+  data.frame(Group = "Non-Pathfinding", Enrollment = non_pathfinding_data$count)
+)
+
+ggplot(summary_comparison, aes(x = Group)) +
+  geom_bar(aes(y = as.numeric(`Total Enrollment`)), stat = "identity", fill = "steelblue") +
+  geom_text(aes(y = as.numeric(`Total Enrollment`), label = round(as.numeric(`Total Enrollment`), 1)), vjust = -0.5) +
+  labs(title = "Total Enrollment Comparison: Pathfinding vs Non-Pathfinding Countries", x = "Group", y = "Total Enrollment") +
+  theme_minimal()
+```
+
+
+
+
 

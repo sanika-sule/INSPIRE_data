@@ -1,34 +1,7 @@
 inspire_data
 ================
 Sanika Sule
-2024-05-01
-
-``` r
-library(tidyverse)
-```
-
-    ## Warning: package 'readr' was built under R version 4.3.2
-
-    ## Warning: package 'stringr' was built under R version 4.3.3
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.3     ✔ readr     2.1.4
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-    ## ✔ purrr     1.0.2     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-``` r
-library(tidyr)
-library(dplyr)
-library(readr)
-library(ggplot2)
-library(knitr)
-```
+2024-05-15
 
 .
 
@@ -119,7 +92,8 @@ ggplot(long_eng, aes(x = activity_type, y = count, fill = activity_type)) +
        y = "Count")
 ```
 
-    ## Warning: Removed 126 rows containing missing values (`geom_bar()`).
+    ## Warning: Removed 126 rows containing missing values or values outside the scale range
+    ## (`geom_bar()`).
 
 ![](inspire_data_files/figure-gfm/eng_act_plot-1.png)<!-- -->
 
@@ -176,7 +150,8 @@ ggplot(eng_long_month, aes(x = month, y = count, fill = activity_type)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 ```
 
-    ## Warning: Removed 126 rows containing missing values (`geom_col()`).
+    ## Warning: Removed 126 rows containing missing values or values outside the scale range
+    ## (`geom_col()`).
 
 ![](inspire_data_files/figure-gfm/activity_month-1.png)<!-- -->
 
@@ -375,3 +350,121 @@ ggplot(geo_order, aes(x = reorder(country_name, -count), y = count, fill = count
 ```
 
 ![](inspire_data_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+pathfinding_countries = c("Armenia", "Botswana", "Brazil", "Burkina Faso", "Cambodia", "Canada", 
+                           "Colombia", "Côte D’Ivoire", "El Salvador", "Ethiopia", "Finland", "France", 
+                           "Georgia", "Guinea", "Honduras", "Indonesia", "Jamaica", "Japan", "Jordan", 
+                           "Kenya", "Mexico", "Mongolia", "Montenegro", "Namibia", "Nigeria", 
+                           "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Romania", "South Africa", 
+                           "Sri Lanka", "Sweden", "Tanzania", "Uganda", "United Arab Emirates", "Zambia", "Zimbabwe")
+
+
+pathfinding_data = enrollement_location |>
+  filter(country_name %in% pathfinding_countries)
+```
+
+``` r
+pathfinding_order <- pathfinding_data |>
+  arrange(desc(count))
+# Pathfinding plot
+ggplot(pathfinding_order, aes(x = reorder(country_name, -count), y = count, fill = count)) +
+  geom_bar(stat = "identity") + 
+  labs(title = "Enrollment by Pathfinding Country", x = "Country", y = "Enrollment Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+![](inspire_data_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+#Pathfinding table
+kable(pathfinding_order)
+```
+
+| date       | count | country_name         | country_alpha3 |
+|:-----------|------:|:---------------------|:---------------|
+| 2024-04-18 |    67 | Nigeria              | NGA            |
+| 2024-04-18 |    63 | Kenya                | KEN            |
+| 2024-04-18 |    53 | Uganda               | UGA            |
+| 2024-04-18 |    50 | Canada               | CAN            |
+| 2024-04-18 |    40 | Brazil               | BRA            |
+| 2024-04-18 |    33 | South Africa         | ZAF            |
+| 2024-04-18 |    30 | Indonesia            | IDN            |
+| 2024-04-18 |    30 | Zimbabwe             | ZWE            |
+| 2024-04-18 |    26 | Mexico               | MEX            |
+| 2024-04-18 |    25 | Tanzania             | TZA            |
+| 2024-04-18 |    23 | Zambia               | ZMB            |
+| 2024-04-18 |    21 | Colombia             | COL            |
+| 2024-04-18 |    21 | Ethiopia             | ETH            |
+| 2024-04-18 |    21 | France               | FRA            |
+| 2024-04-18 |    12 | Peru                 | PER            |
+| 2024-04-18 |    12 | Philippines          | PHL            |
+| 2024-04-18 |    11 | Japan                | JPN            |
+| 2024-04-18 |     9 | Cambodia             | KHM            |
+| 2024-04-18 |     8 | Botswana             | BWA            |
+| 2024-04-18 |     7 | United Arab Emirates | ARE            |
+| 2024-04-18 |     7 | El Salvador          | SLV            |
+| 2024-04-18 |     5 | Jordan               | JOR            |
+| 2024-04-18 |     5 | Sri Lanka            | LKA            |
+| 2024-04-18 |     4 | Armenia              | ARM            |
+| 2024-04-18 |     4 | Burkina Faso         | BFA            |
+| 2024-04-18 |     3 | Mongolia             | MNG            |
+| 2024-04-18 |     3 | Namibia              | NAM            |
+| 2024-04-18 |     3 | Romania              | ROU            |
+| 2024-04-18 |     3 | Sweden               | SWE            |
+| 2024-04-18 |     2 | Georgia              | GEO            |
+| 2024-04-18 |     2 | Honduras             | HND            |
+| 2024-04-18 |     2 | Papua New Guinea     | PNG            |
+| 2024-04-18 |     1 | Finland              | FIN            |
+| 2024-04-18 |     0 | Paraguay             | PRY            |
+
+``` r
+non_pathfinding_data = enrollement_location %>%
+  filter(!country_name %in% pathfinding_countries)
+
+# Summarize the enrollment counts for each group
+summary_pathfinding <- pathfinding_data %>%
+  summarize(total_enrollment = sum(count), 
+            average_enrollment = mean(count), 
+            median_enrollment = median(count))
+
+summary_non_pathfinding <- non_pathfinding_data %>%
+  summarize(total_enrollment = sum(count), 
+            average_enrollment = mean(count), 
+            median_enrollment = median(count))
+
+# Combine summaries into a single data frame
+summary_comparison <- rbind(
+  c("Pathfinding Countries", summary_pathfinding$total_enrollment, summary_pathfinding$average_enrollment, summary_pathfinding$median_enrollment),
+  c("Non-Pathfinding Countries", summary_non_pathfinding$total_enrollment, summary_non_pathfinding$average_enrollment, summary_non_pathfinding$median_enrollment)
+)
+
+# Convert to data frame and set column names
+summary_comparison <- as.data.frame(summary_comparison)
+colnames(summary_comparison) <- c("Group", "Total Enrollment", "Average Enrollment", "Median Enrollment")
+
+# Print the summary table using kable
+kable(summary_comparison)
+```
+
+| Group                     | Total Enrollment | Average Enrollment | Median Enrollment |
+|:--------------------------|:-----------------|:-------------------|:------------------|
+| Pathfinding Countries     | 606              | 17.8235294117647   | 10                |
+| Non-Pathfinding Countries | 1068             | 9.05084745762712   | 3                 |
+
+``` r
+# Plot the comparison
+comparison_data <- rbind(
+  data.frame(Group = "Pathfinding", Enrollment = pathfinding_data$count),
+  data.frame(Group = "Non-Pathfinding", Enrollment = non_pathfinding_data$count)
+)
+
+ggplot(summary_comparison, aes(x = Group)) +
+  geom_bar(aes(y = as.numeric(`Total Enrollment`)), stat = "identity", fill = "steelblue") +
+  geom_text(aes(y = as.numeric(`Total Enrollment`), label = round(as.numeric(`Total Enrollment`), 1)), vjust = -0.5) +
+  labs(title = "Total Enrollment Comparison: Pathfinding vs Non-Pathfinding Countries", x = "Group", y = "Total Enrollment") +
+  theme_minimal()
+```
+
+![](inspire_data_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
